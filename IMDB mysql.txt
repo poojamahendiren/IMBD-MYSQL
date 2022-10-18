@@ -1,0 +1,125 @@
+IMDB Design a DB for IMDB 
+1. Movie should have multiple media(Video or Image) 
+2. Movie can belongs to multiple Genre 
+3. Movie can have multiple reviews and Review can belongs to a user 
+4. Artist can have multiple skills 5. Artist can perform multiple role in a single film
+
+
+CREATE DATABASE imdb;
+
+-- 1. Movie should have multiple media(Video or Image) 
+
+CREATE TABLE Movie ( Id INT PRIMARY KEY AUTO_INCREMENT, MovieName VARCHAR(255), Director VARCHAR(255), Language ENUM ('TAMIL'));
+
+
+CREATE TABLE Media_img (ID INT PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(255), Type VARCHAR(255), Size VARCHAR(255));
+CREATE TABLE Media_video (ID INT PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(255), Type VARCHAR(255), Size VARCHAR(255));
+
+
+INSERT INTO Media_img (ID, Name, Type, Size) VALUES (1, "img1", "Image", "50MB" );
+INSERT INTO Media_video (ID, Name, Type, Size) VALUES (1, "video1", "Video", "100MB" );
+
+
+CREATE TABLE Movie ( Id INT PRIMARY KEY AUTO_INCREMENT, MovieName VARCHAR(255), Director VARCHAR(255), Language ENUM ('TAMIL'));
+
+ALTER TABLE Media_img ADD FOREIGN KEY (MovieId) REFERENCES Movie(Id);
+ALTER TABLE Media_img ADD COLUMN MovieId INT;
+ALTER TABLE Media_video ADD COLUMN MovieId INT;
+
+
+UPDATE Media_img SET MovieId=1 WHERE Id in (1);
+UPDATE Media_video SET MovieId=1 WHERE Id in (1);
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+-- 2. Movie can belongs to multiple Genre
+
+
+INSERT INTO Movie (MovieName, Director, Language) VALUES ("Ps", "Manirathnam", "Tamil");
+INSERT INTO Movie (MovieName, Director, Language) VALUES ("Vikram", "Lokesh", "Tamil");
+INSERT INTO Movie (MovieName, Director, Language) VALUES ("Cobra", "Nayamuthu", "Tamil");
+
+CREATE TABLE Genre ( Id INT PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(255));
+INSERT INTO Genre (Name) VALUES ("Action");
+INSERT INTO Genre (Name) VALUES ("Comedy");
+INSERT INTO Genre (Name) VALUES ("Love");
+INSERT INTO Genre (Name) VALUES ("Period");
+
+ALTER TABLE Genre ADD COLUMN MovieId INT;
+
+ALTER TABLE Genre ADD FOREIGN KEY (MovieId) REFERENCES Movie(Id);
+UPDATE Genre SET MovieId=1 WHERE Id in (1);
+UPDATE Genre SET MovieId=2 WHERE Id in (2);
+UPDATE Genre SET MovieId=3 WHERE Id in (3);
+UPDATE Genre SET MovieId=1 WHERE Id in (4);
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+-- 3.Movie can have multiple reviews and Review can belongs to a user
+
+CREATE TABLE Users ( Id INT PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(255), Age INT);
+INSERT INTO Users (Id, Name, Age) VALUES (1, "xxx", 22);
+INSERT INTO Users (Id, Name, Age) VALUES (2, "yyy", 24);
+
+CREATE TABLE Reviews ( Id INT PRIMARY KEY AUTO_INCREMENT, Rating INT);
+INSERT INTO Reviews (Rating) VALUES (5);
+INSERT INTO Reviews (Rating) VALUES (4);
+INSERT INTO Reviews (Rating) VALUES (3);
+
+ALTER TABLE Reviews ADD COLUMN MovieId INT;
+ALTER TABLE Reviews ADD COLUMN UserId INT;
+ALTER TABLE Reviews ADD FOREIGN KEY (MovieId) REFERENCES Movie(Id);
+ALTER TABLE Reviews ADD FOREIGN KEY (UserId) REFERENCES Users(Id);
+
+UPDATE Reviews SET MovieId=1,UserId=1 WHERE Id in (1);
+UPDATE Reviews SET MovieId=1,UserId=2 WHERE Id in (2);
+UPDATE Reviews SET MovieId=2,UserId=1 WHERE Id in (3);
+UPDATE Reviews SET MovieId=2,UserId=2 WHERE Id in (4);
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+-- 4. Artist can have multiple skills 5. Artist can perform multiple role in a single film
+
+
+CREATE TABLE Artist ( Id INT PRIMARY KEY AUTO_INCREMENT, Name VARCHAR(255), Experience VARCHAR(255), Average_Salary INT, Contact_Number INT);
+INSERT INTO Artist (ID, Name, Experience, Average_Salary, Contact_Number) VALUES (1, "Vikram", "20Years" , 5000000, 235112 );
+INSERT INTO Artist (ID, Name, Experience, Average_Salary, Contact_Number) VALUES (2, "KamalHasan", "40Years" , 10000000, 215206 );
+INSERT INTO Artist (ID, Name, Experience, Average_Salary, Contact_Number) VALUES (3, "PrakashRaj", "40Years" , 5000000, 250270 );
+INSERT INTO Artist (ID, Name, Experience, Average_Salary, Contact_Number) VALUES (4, "VijaySethupathi", "10Years" , 6000000, 226000 );
+
+CREATE TABLE Skills (Id INT PRIMARY KEY AUTO_INCREMENT, Skill VARCHAR(255));
+INSERT INTO Skills (Id, Skill) VALUES (1, "Dancer");
+INSERT INTO Skills (Id, Skill) VALUES (2, "Fighter");
+INSERT INTO Skills (Id, Skill) VALUES (3, "Mimicry");
+INSERT INTO Skills (Id, Skill) VALUES (4, "Politician");
+
+CREATE TABLE ArtistSkills (Id INT PRIMARY KEY AUTO_INCREMENT);
+ALTER TABLE ArtistSkills ADD COLUMN ArtistId INT;
+ALTER TABLE ArtistSkills ADD COLUMN SkillsId INT;
+ALTER TABLE ArtistSkills ADD COLUMN Count INT;
+ALTER TABLE ArtistSkills ADD FOREIGN KEY (ArtistId) REFERENCES Artist(Id);
+ALTER TABLE ArtistSkills ADD FOREIGN KEY (SkillsId) REFERENCES Skills(Id);
+INSERT INTO ArtistSkills (Id) VALUES (1);
+INSERT INTO ArtistSkills (Id) VALUES (2);
+INSERT INTO ArtistSkills (Id) VALUES (3);
+INSERT INTO ArtistSkills (Id) VALUES (4);
+INSERT INTO ArtistSkills (Id) VALUES (5);
+
+UPDATE ArtistSkills SET ArtistId=1, SkillsId=1 WHERE Id in (1);
+UPDATE ArtistSkills SET ArtistId=1, SkillsId=2 WHERE Id in (2);
+UPDATE ArtistSkills SET ArtistId=2, SkillsId=1 WHERE Id in (3);
+UPDATE ArtistSkills SET ArtistId=2, SkillsId=2 WHERE Id in (4);
+UPDATE ArtistSkills SET ArtistId=2, SkillsId=3 WHERE Id in (5);
+
+
+
+SELECT * FROM Media_img;
+SELECT * FROM Media_video;
+SELECT * FROM Movie;
+SELECT * FROM Genre;
+SELECT * FROM Users;
+SELECT * FROM Reviews;
+SELECT * FROM Artist;
+SELECT * FROM Skills;
+SELECT * FROM ArtistSkills;
